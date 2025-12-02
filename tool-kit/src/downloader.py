@@ -79,9 +79,11 @@ def download(root_dir: str, type: str, **query):
         **query: Filters for catalog search
     """
     result = search(type, **query)
+    logging.info(f"Found {len(result)} matching records")
     for item in result:
         prefix = set_prefix(type=type, **item)
         objects = list_objects(prefix=prefix)
+        logging.info(f"Found {len(objects)} objects")
         for obj in objects:
             logging.info(f"Found object: {obj}")
             url = f"https://{ENDPOINT}/{BUCKET}/{obj}"
@@ -116,12 +118,12 @@ if __name__ == "__main__":
         type="RCM",
         project="EURO-CORDEX",
         domain="EUR-12",
-        gcm="CMCC-CM2-SR5",
+        gcm=["CMCC-CM2-SR5", "IPSL-CM6A-LR", "NorESM2-MM"],
         member="r1i1p1f1",
-        rcm="CNRM-ALADIN64E1",
-        experiment="historical",
+        rcm=["CNRM-ALADIN64E1", "HCLIM43-ALADIN"],
+        experiment=["historical", "ssp370"],
         timestep="day",
-        variable="tasAdjust",
+        variable=["tasAdjust", "rsdsAdjust"],
         version="v1-r1",
         version_hackathon="version-hackathon-102025",
     )

@@ -5,8 +5,8 @@ setup(
     version="0.1.0",
     description="",
     author="",
-    packages=find_packages(where="downloader"),
-    package_dir={"": "downloader"},
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=["pandas", "requests", "minio", "tqdm", "xarray"],
     python_requires=">=3.7",
 )
