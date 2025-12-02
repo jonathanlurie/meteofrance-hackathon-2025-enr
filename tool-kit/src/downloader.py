@@ -94,36 +94,19 @@ def download(root_dir: str, type: str, **query):
                 if not os.path.exists(output_path):
                     os.makedirs(output_path)
                 output_path = f"{output_path}/{url.split('/')[-1]}"
-                total_size = int(response.headers.get("content-length", 0))
-                with open(output_path, "wb") as f, tqdm(
-                    desc=f"Downloading {url.split('/')[-1]}",
-                    total=total_size,
-                    unit="B",
-                    unit_scale=True,
-                    unit_divisor=1024,
-                ) as bar:
-                    for chunk in response.iter_content(chunk_size=8192):
-                        if chunk:
-                            f.write(chunk)
-                            bar.update(len(chunk))
-                logging.info(f"Saved to {output_path}")
+                if os.path.exists(output_path):
+                    total_size = int(response.headers.get("content-length", 0))
+                    with open(output_path, "wb") as f, tqdm(
+                        desc=f"Downloading {url.split('/')[-1]}",
+                        total=total_size,
+                        unit="B",
+                        unit_scale=True,
+                        unit_divisor=1024,
+                    ) as bar:
+                        for chunk in response.iter_content(chunk_size=8192):
+                            if chunk:
+                                f.write(chunk)
+                                bar.update(len(chunk))
+                    logging.info(f"Saved to {output_path}")
             else:
                 logging.error(f"Failed to download {url}: {response.status_code}")
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    download(
-        root_dir="./data",
-        type="RCM",
-        project="EURO-CORDEX",
-        domain="EUR-12",
-        gcm=["CMCC-CM2-SR5", "IPSL-CM6A-LR", "NorESM2-MM"],
-        member="r1i1p1f1",
-        rcm=["CNRM-ALADIN64E1", "HCLIM43-ALADIN"],
-        experiment=["historical", "ssp370"],
-        timestep="day",
-        variable=["tasAdjust", "rsdsAdjust"],
-        version="v1-r1",
-        version_hackathon="version-hackathon-102025",
-    )
