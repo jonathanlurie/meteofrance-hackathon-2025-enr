@@ -9,3 +9,30 @@
   margin: auto 10px;
 
 }
+
+.legendContainer {
+  width: 256px;
+  background-color: #fff;
+  padding: 6px 0px; 
+  display: flex;
+}
+
+.legendContainer span {
+  width: 70px;
+  margin: 2px;
+  text-align: center;
+  font-family: sans-serif;
+  color: #000000c5;
+  font-size: 14px;
+}
+
+.colormapImage {
+  height: 20px;
+  width: 110px;
+  border-radius: 3px;
+}
+
+.legendLabel {
+  font-family: sans-serif;
+  margin: 2px;
+}
