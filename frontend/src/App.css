@@ -4,3 +4,11 @@
   position: absolute;
   z-index: 2;
 }
+
+.infoButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 20px 20px 0px 0px;
+  z-index: 2;
+}

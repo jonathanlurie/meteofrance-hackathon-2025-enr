@@ -3,20 +3,27 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl, { type MapMouseEvent } from "maplibre-gl";
 import { getStyle, setLayerOpacity, swapLayers } from "basemapkit";
 import { Protocol } from "pmtiles";
+import { InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import './App.css'
 import { Colormap, MultiChannelSeriesTiledLayer, ColormapDescriptionLibrary, type MultiChannelSeriesTiledLayerSpecification } from 'shadertiledlayer';
 
-import { Button } from 'antd';
+import { Button, Drawer } from 'antd';
 import MlMap from './components/MlMap';
 import { climatelayerPickingValueAtom } from './store';
 import { useAtom } from 'jotai';
+import TraccSlider from './components/TraccSlider';
+import MonthSlider from './components/MonthSlider';
+import MenuIndicators from './components/MenuIndicators';
+import SideMenu from './components/SideMenu';
+import InfoDrawerContent from './components/InfoDrawerContent';
 
 
 function App() {
   // const [count, setCount] = useState(0);
   const mapDivRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
-   const [climatelayerPickingValue, ] = useAtom(climatelayerPickingValueAtom)
+  const [climatelayerPickingValue, ] = useAtom(climatelayerPickingValueAtom);
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!mapDivRef.current) {
@@ -82,12 +89,34 @@ function App() {
     
   }
 
+  const onOpenDrawer = () => {
+    setDrawerOpen(true);
+  }
+
+  const onCloseDrawer = () => {
+    setDrawerOpen(false);
+  }
+
   return (
     <>
+      <Button className="infoButton" icon={<InfoCircleOutlined />} onClick={onOpenDrawer}>Info</Button>
+      <TraccSlider/>
+      <MonthSlider/>
+      <SideMenu/>
       <div className='element-container'>
+        
         <span>{climatelayerPickingValue ? climatelayerPickingValue.value.toFixed(2) : ""}</span>
       </div>
       <MlMap />
+      <Drawer
+        title="Drawer blur"
+        placement="right"
+        mask={false}
+        onClose={onCloseDrawer}
+        open={drawerOpen}
+      >
+        <InfoDrawerContent/>
+      </Drawer>
     </>
   )
 }

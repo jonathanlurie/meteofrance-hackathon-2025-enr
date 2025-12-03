@@ -35,7 +35,7 @@ export default function MlMap() {
         lang,
         hidePOIs: true,
     
-        // globe: false,
+        globe: false,
         // terrain: {
         //   pmtiles: "https://fsn1.your-objectstorage.com/public-map-data/pmtiles/terrain-mapterhorn.pmtiles",
         //   encoding: "terrarium"
@@ -46,9 +46,11 @@ export default function MlMap() {
 
       const map = new maplibregl.Map({
         container: mapDivRef.current as HTMLDivElement,
-        hash: true,
+        hash: false,
         style: style,
         maxPitch: 85,
+        center: [4.326, 46.487],
+        zoom: 5
       });
 
       if (!map) return;
