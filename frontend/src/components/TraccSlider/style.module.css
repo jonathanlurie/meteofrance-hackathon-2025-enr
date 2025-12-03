@@ -1,5 +1,5 @@
 .traccSliderContainer {
-  width: 80vw;
+  width: calc(100vw - 300px);
   height: fit-content;
   position: absolute;
   top: 0;
