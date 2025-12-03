@@ -3,6 +3,7 @@ import { Slider, type SliderSingleProps } from 'antd';
 import styles from './style.module.css';
 import { monthAtom } from '../../store';
 import { useAtom } from 'jotai';
+import { addLayer } from '../../tools';
 
 const marks: SliderSingleProps['marks'] = {
   1: 'Janvier',
@@ -26,7 +27,8 @@ export default function MonthSlider() {
 
   const changeMonth = (e) => {
     console.log(e);
-    setMonth(e);
+    setMonth(e < 10 ? `0${e}`: e.toString());
+    addLayer()
   }
 
   return (

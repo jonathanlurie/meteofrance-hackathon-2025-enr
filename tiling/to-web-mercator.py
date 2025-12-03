@@ -383,6 +383,8 @@ def export_web_raster_tile(z: int, x: int, y: int, ds: gdal.Dataset, output_fold
     output_web_tile_filepath = os.path.join(output_folder, f"{str(z)}/{str(x)}/{str(y)}.webp")
     output_web_tile_dir = os.path.dirname(output_web_tile_filepath)
 
+    print(output_web_tile_filepath)
+
     # If already existing, we remove it so that we can overwrite it
     if os.path.isfile(output_web_tile_filepath):
         os.remove(output_web_tile_filepath)
@@ -550,24 +552,99 @@ def create_tileset(
 
     
 
-if __name__ == "__main__":
-    argz = parse_args(sys.argv[1:])
+# if __name__ == "__main__":
+#     argz = parse_args(sys.argv[1:])
 
-    create_tileset(
-        argz.input, 
-        argz.output,
-        argz.identifier,
-        argz.minzoom,
-        argz.maxzoom,
-        argz.lowest_value,
-        argz.value_step,
-        argz.channels,
-        argz.keep_raw_tiles,
-        argz.meta_name,
-        argz.meta_description,
-        argz.meta_attribution,
-        argz.meta_pixel_unit,
-        argz.meta_series_axis_name,
-        argz.meta_series_axis_unit,
-        argz.meta_series_axis_value,
-        )
+#     create_tileset(
+#         argz.input, 
+#         argz.output,
+#         argz.identifier,
+#         argz.minzoom,
+#         argz.maxzoom,
+#         argz.lowest_value,
+#         argz.value_step,
+#         argz.channels,
+#         argz.keep_raw_tiles,
+#         argz.meta_name,
+#         argz.meta_description,
+#         argz.meta_attribution,
+#         argz.meta_pixel_unit,
+#         argz.meta_series_axis_name,
+#         argz.meta_series_axis_unit,
+#         argz.meta_series_axis_value,
+#         )
+    
+if __name__ == "__main__":
+    all_models = ["CMCC"]
+    all_indicators = ["dju"]
+    all_tracc_values = [
+        "15",
+        "20",
+        "27",
+        "40",
+    ]
+    all_months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+
+    tracc_axis_values = {
+        "15": 1.5,
+        "20": 2.0,
+        "27": 2.7,
+        "40": 4.0,
+    }
+
+    lowest_values = {
+        "dju": 0,
+    }
+
+    value_steps = {
+        "dju": 1,
+    }
+
+    axis_name = {
+        "dju": "Degree day"
+    }
+
+    axis_unit = {
+        "dju": "Degree day"
+    }
+
+    pixel_unit = {
+        "dju": "°C.day"
+    }
+
+    file_pattern = '/home/jlurie/Downloads/dju_cmcc/ok/{indicator}_{model}_tracc{tracc_value}_{month}.tif'
+
+    output_folder = "../frontend/public/tilesets"
+
+    for model in all_models:
+        model_folder = os.path.join(output_folder, model)
+
+        if os.path.isfile(model_folder):
+            os.remove(model_folder)
+
+        for indicator in all_indicators:
+
+            for month in all_months:
+                identifier = f"{indicator}_{month}"
+
+                for tracc_value in all_tracc_values:
+                    input_filepath = file_pattern.replace("{indicator}", indicator).replace("{model}", model).replace("{tracc_value}", tracc_value).replace("{month}", month)
+
+                    create_tileset(
+                        input=input_filepath, 
+                        output=model_folder,
+                        identifier=identifier,
+                        minzoom=0,
+                        maxzoom=6,
+                        lowest_value=lowest_values[indicator],
+                        value_step=value_steps[indicator],
+                        channels="rg",
+                        keep_raw_tiles=False,
+                        meta_name=f"{identifier}_{tracc_value}",
+                        meta_description="",
+                        meta_attribution="Meteo France",
+                        meta_pixel_unit="°C",
+                        meta_series_axis_name="TRACC °C",
+                        meta_series_axis_unit=pixel_unit[indicator],
+                        meta_series_axis_value=tracc_axis_values[tracc_value],
+                    )

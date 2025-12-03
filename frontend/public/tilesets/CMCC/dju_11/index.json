@@ -1,0 +1,50 @@
+{
+  "name": "dju_11_15",
+  "description": "",
+  "attribution": [
+    "Meteo France"
+  ],
+  "crs": "EPSG:3857",
+  "bounds": [
+    -600259.4627956222,
+    5050955.326685353,
+    1206289.1699511998,
+    6649056.040269081
+  ],
+  "tileSize": 512,
+  "rasterFormat": "webp",
+  "minZoom": 0,
+  "maxZoom": 6,
+  "metadata": {},
+  "rasterEncoding": {
+    "channels": "rg",
+    "vectorDimension": 1,
+    "polynomialSlope": 1,
+    "polynomialOffset": 0
+  },
+  "pixelUnit": "°C",
+  "seriesAxisName": "TRACC °C",
+  "seriesAxisUnit": "°C.day",
+  "series": [
+    {
+      "tileUrlPattern": "1-5/{z}/{x}/{y}.webp",
+      "seriesAxisValue": 1.5,
+      "metadata": {}
+    },
+    {
+      "tileUrlPattern": "2-0/{z}/{x}/{y}.webp",
+      "seriesAxisValue": 2.0,
+      "metadata": {}
+    },
+    {
+      "tileUrlPattern": "2-7/{z}/{x}/{y}.webp",
+      "seriesAxisValue": 2.7,
+      "metadata": {}
+    },
+    {
+      "tileUrlPattern": "4-0/{z}/{x}/{y}.webp",
+      "seriesAxisValue": 4.0,
+      "metadata": {}
+    }
+  ]
+}
