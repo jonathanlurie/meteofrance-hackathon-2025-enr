@@ -1,11 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import {  useState } from 'react'
 import "maplibre-gl/dist/maplibre-gl.css";
-import maplibregl from "maplibre-gl";
-import { getStyle, setLayerOpacity } from "basemapkit";
-import { Protocol } from "pmtiles";
 import { InfoCircleOutlined } from '@ant-design/icons';
 import './App.css'
-import { Colormap, MultiChannelSeriesTiledLayer, ColormapDescriptionLibrary, type MultiChannelSeriesTiledLayerSpecification } from 'shadertiledlayer';
 
 import { Button, Drawer } from 'antd';
 import MlMap from './components/MlMap';
@@ -50,8 +46,9 @@ function App() {
       </div>
       <MlMap />
       <Drawer
-        title="Drawer blur"
+        title="Energie4Climate"
         placement="right"
+        size="large"
         mask={false}
         onClose={onCloseDrawer}
         open={drawerOpen}
