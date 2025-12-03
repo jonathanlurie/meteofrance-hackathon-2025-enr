@@ -39,10 +39,7 @@ export async function addLayer() {
   const seriesInfoUrl = `${tileUrlPrefix}index.json`;  
   const seriesInfoResponse = await fetch(seriesInfoUrl);
   const seriesInfo = (await seriesInfoResponse.json()) as MultiChannelSeriesTiledLayerSpecification;
-  const colormap = colormaps[indicator as keyof typeof colormaps];
-
-  console.log(seriesInfo);
-  
+  const colormap = colormaps[indicator as keyof typeof colormaps];  
 
   colormap.createImageObjectURL()
   .then((url) => {
@@ -73,9 +70,7 @@ export async function addLayer() {
   eventSub = map?.on("mousemove", async (e: MapMouseEvent) => {
     try {
       const pickingInfo = await climateLayer.pick(e.lngLat);
-      if (pickingInfo) {
-        console.log(pickingInfo);
-        
+      if (pickingInfo) {        
         store.set(climatelayerPickingValueAtom, pickingInfo);
       } else {
         store.set(climatelayerPickingValueAtom, null);
