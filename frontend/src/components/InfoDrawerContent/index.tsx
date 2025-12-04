@@ -49,6 +49,10 @@ export default function InfoDrawerContent() {
         Ce projet a été réalisé dans le cadre du hackathon organisé par Météo France, avec pour thème <a href="https://guides.data.gouv.fr/guide-du-participant-au-hackathon-le-climat-en-donnees">le climat en données</a>
       </p>
 
+      <p>
+        Retrouvez le code source complet du projet <a href='https://github.com/Florent-Co/mf-hackathon-enr'>sur GitHub</a>.
+      </p>
+
       <img src="/hackathon.avif"></img>
 
     </div>
