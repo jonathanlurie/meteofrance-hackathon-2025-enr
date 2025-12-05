@@ -1,0 +1,31 @@
+[project]
+name = "mf_toolkit"
+version = "0.1.0"
+description = "Toolkit for Meteo France Hackathon \"Le climat en données\""
+authors = [
+    { name = "Florent Cornet"},
+    { name = "Jonathan Lurie" },
+    { name = "Mareva" },
+    { name = "Marie Jamet" }
+]
+requires-python = ">=3.7"
+dependencies = [
+    "pandas",
+    "requests",
+    "minio",
+    "tqdm",
+    "xarray",
+    "rioxarray",
+    "netcdf4",
+]
+
+[project.optional-dependencies]
+geo = [
+    "gdal",
+    "rioxarray",
+    "Pillow"
+]
+
+[project.scripts]
+mf-toolkit = "main:main"
+to-web-mercator = "tiling.to_web_mercator:main"

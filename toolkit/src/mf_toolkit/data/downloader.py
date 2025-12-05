@@ -1,3 +1,4 @@
+from typing import Optional
 import os
 import logging
 import requests
@@ -6,15 +7,13 @@ import pandas as pd
 from minio import Minio
 from tqdm import tqdm
 
-
-ENDPOINT = "object.files.data.gouv.fr"
-BUCKET = "meteofrance-drias"
-
-RCM_DIRECTORY_TEMPLATE = "SocleM-Climat-2025/RCM/%(project)s/%(domain)s/%(gcm)s/%(member)s/%(rcm)s/%(experiment)s/%(timestep)s/%(variable)s/version-hackathon-102025"
-RCM_FILENAME_TEMPLATE = "%(variable)s_%(region)s_%(gcm)s_%(experiment)s_%(member)s_%(institute)s_%(rcm)s_%(version)s_%(bias_adjustment)s_%(timestep)s_%(date_beg)s-%(date_end)s.nc"
-
-CPCRM_DIRECTORY_TEMPLATE = "SocleM-Climat-2025/CPCRCM/%(project)s/%(domain)s/%(gcm)s/%(member)s/%(rcm)s/%(experiment)s/%(timestep)s/%(variable)s/version-hackathon-102025"
-CPCRM_FILENAME_TEMPLATE = "%(variable)s_%(region)s_%(gcm)s_%(experiment)s_%(member)s_%(institute)s_%(rcm)s_%(version)s_%(bias_adjustment)s_%(timestep)s_%(date_beg)s-%(date_end)s.nc"
+from .config import (
+    DATA_DIR,
+    ENDPOINT,
+    BUCKET,
+    RCM_DIRECTORY_TEMPLATE,
+    CPCRM_DIRECTORY_TEMPLATE,
+)
 
 
 def search(type: str, **query):
@@ -70,12 +69,12 @@ def list_objects(prefix):
     return [obj.object_name for obj in objects]
 
 
-def download(root_dir: str, type: str, **query):
+def download(type: str, root_dir: Optional[str] = DATA_DIR, **query):
     """
     Download files matching query from object storage, with progress bars.
     Args:
         output_dir (str): Directory to save downloaded files
-        type (str): Catalog type ('RCM', 'CPCRCM', etc.)
+        type (str): Projections type ('RCM', 'CPCRCM', etc.)
         **query: Filters for catalog search
     """
     result = search(type, **query)
@@ -87,14 +86,14 @@ def download(root_dir: str, type: str, **query):
         for obj in objects:
             logging.info(f"Found object: {obj}")
             url = f"https://{ENDPOINT}/{BUCKET}/{obj}"
-            logging.info(f"Downloading {url}")
-            response = requests.get(url, stream=True)
-            if response.status_code == 200:
-                output_path = f"{root_dir}/{prefix}"
-                if not os.path.exists(output_path):
-                    os.makedirs(output_path)
-                output_path = f"{output_path}/{url.split('/')[-1]}"
-                if not os.path.exists(output_path):
+            output_path = f"{root_dir}/{obj}"
+            if not os.path.exists(output_path):
+                logging.info(f"Downloading {url}")
+                try:
+                    response = requests.get(url, stream=True, timeout=60)
+                    response.raise_for_status()
+                    if not os.path.exists(os.path.dirname(output_path)):
+                        os.makedirs(os.path.dirname(output_path))
                     total_size = int(response.headers.get("content-length", 0))
                     with open(output_path, "wb") as f, tqdm(
                         desc=f"Downloading {url.split('/')[-1]}",
@@ -108,5 +107,11 @@ def download(root_dir: str, type: str, **query):
                                 f.write(chunk)
                                 bar.update(len(chunk))
                     logging.info(f"Saved to {output_path}")
+                except requests.exceptions.ChunkedEncodingError as e:
+                    logging.error(f"ChunkedEncodingError while downloading {url}: {e}")
+                except requests.exceptions.RequestException as e:
+                    logging.error(f"RequestException while downloading {url}: {e}")
             else:
-                logging.error(f"Failed to download {url}: {response.status_code}")
+                logging.info(
+                    f"File already exists at {output_path}, skipping download."
+                )
